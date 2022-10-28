@@ -13,7 +13,7 @@ class TodoDb {
   DatabaseFactory dbFactory = databaseFactoryIo;
   final store = intMapStoreFactory.store('todos');
 
-  get database async => _database ?? await openDb();
+  get database async => _database = _database ?? await openDb();
 
   Future<Database> openDb() async {
     final docsPath = await getApplicationDocumentsDirectory();
@@ -41,7 +41,6 @@ class TodoDb {
   }
 
   Future<List<Todo>> getTodos() async {
-    await database;
     final finder = Finder(sortOrders: [
       SortOrder('priority'),
       SortOrder('id'),

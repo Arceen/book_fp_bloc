@@ -4,12 +4,16 @@ import '../data/todo_db.dart';
 
 class TodoBloc {
   late TodoDb db;
-  List<Todo> todoList;
+  List<Todo>? todoList;
   TodoBloc() {
     db = TodoDb();
     getTodos();
     _todosStreamController.stream.listen(returnTodos);
+    _todoInsertController.stream.listen(_addTodo);
+    _todoUpdateController.stream.listen(_updateTodo);
+    _todoDeleteController.stream.listen(_deleteTodo);
   }
+
   final _todosStreamController = StreamController<List<Todo>>.broadcast();
   final _todoInsertController = StreamController<Todo>();
   final _todoUpdateController = StreamController<Todo>();
@@ -48,5 +52,12 @@ class TodoBloc {
     db.insertTodo(todo).then((result) {
       getTodos();
     });
+  }
+
+  void dispose() {
+    _todosStreamController.close();
+    _todoInsertController.close();
+    _todoUpdateController.close();
+    _todoDeleteController.close();
   }
 }
